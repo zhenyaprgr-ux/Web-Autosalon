@@ -1,0 +1,26 @@
+
+venv/
+.venv/
+env/
+ENV/
+
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+
+.idea/
+.vscode/
+*.swp
+*.swo
+
+
+.DS_Store
+Thumbs.db
+
+# Конфигурационные файлы
+config.py
+*.env
