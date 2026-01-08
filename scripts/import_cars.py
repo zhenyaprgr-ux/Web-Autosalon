@@ -8,7 +8,6 @@ DB_PASSWORD = "1"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
-# Файл с данными
 JSON_FILE = "../data/cars.json"
 
 def create_table(cursor):

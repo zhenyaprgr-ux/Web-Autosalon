@@ -10,7 +10,7 @@ DB_PASSWORD = "1"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
-# Файлы с данными
+#может сломаться, тогда полный путь прописать
 DEALERS_FILE = "../data/dilers.json"
 CARS_FILE = "../data/cars.json"
 

@@ -1,9 +1,7 @@
-
 venv/
 .venv/
 env/
 ENV/
-
 
 __pycache__/
 *.py[cod]
@@ -11,16 +9,13 @@ __pycache__/
 *.so
 .Python
 
-
 .idea/
 .vscode/
 *.swp
 *.swo
 
-
 .DS_Store
 Thumbs.db
 
-# Конфигурационные файлы
 config.py
 *.env
