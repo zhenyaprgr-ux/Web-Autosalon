@@ -1,135 +1,36 @@
-from api.db import get_db_connection
+from api.repositories.car_repository import CarRepository
 
 
 class CarService:
+
+
     @staticmethod
     def get_all_cars():
-        """Получить все автомобили"""
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM cars ORDER BY id')
-        rows = cursor.fetchall()
-
-        result = []
-        for row in rows:
-            result.append({
-                'id': row[0],
-                'firm': row[1],
-                'model': row[2],
-                'year': row[3],
-                'power': row[4],
-                'color': row[5],
-                'price': float(row[6]),
-                'dealer_id': row[7]
-            })
-
-        cursor.close()
-        conn.close()
-        return result
+        return CarRepository.get_all()
 
     @staticmethod
     def get_car_by_id(car_id):
-        """Получить автомобиль по ID"""
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM cars WHERE id = %s', (car_id,))
-        row = cursor.fetchone()
-
-        cursor.close()
-        conn.close()
-
-        if row:
-            return {
-                'id': row[0],
-                'firm': row[1],
-                'model': row[2],
-                'year': row[3],
-                'power': row[4],
-                'color': row[5],
-                'price': float(row[6]),
-                'dealer_id': row[7]
-            }
-        return None
+        return CarRepository.get_by_id(car_id)
 
     @staticmethod
     def create_car(car_data):
-        """Создать новый автомобиль"""
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        # Можно добавить бизнес-логику перед сохранением
+        if car_data['price'] <= 0:
+            raise ValueError("Цена должна быть положительной")
+        if car_data['year'] < 1900 or car_data['year'] > 2025:
+            raise ValueError("Некорректный год выпуска")
 
-        query = '''
-            INSERT INTO cars (firm, model, year, power, color, price, dealer_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING id
-        '''
-        cursor.execute(query, (
-            car_data['firm'],
-            car_data['model'],
-            car_data['year'],
-            car_data['power'],
-            car_data['color'],
-            car_data['price'],
-            car_data.get('dealer_id')
-        ))
-
-        new_id = cursor.fetchone()[0]
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-
-        return {**car_data, 'id': new_id}
+        return CarRepository.create(car_data)
 
     @staticmethod
     def update_car(car_id, car_data):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT id FROM cars WHERE id = %s', (car_id,))
-        if not cursor.fetchone():
-            cursor.close()
-            conn.close()
-            return None
+        # Бизнес-логика
+        if 'price' in car_data and car_data['price'] <= 0:
+            raise ValueError("Цена должна быть положительной")
 
-        query = '''
-            UPDATE cars 
-            SET firm = %s, model = %s, year = %s, power = %s, 
-                color = %s, price = %s, dealer_id = %s
-            WHERE id = %s
-        '''
-        cursor.execute(query, (
-            car_data['firm'],
-            car_data['model'],
-            car_data['year'],
-            car_data['power'],
-            car_data['color'],
-            car_data['price'],
-            car_data.get('dealer_id'),
-            car_id
-        ))
-
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-
-        return {**car_data, 'id': car_id}
+        return CarRepository.update(car_id, car_data)
 
     @staticmethod
     def delete_car(car_id):
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        return CarRepository.delete(car_id)
 
-        # Проверяем существование
-        cursor.execute('SELECT id FROM cars WHERE id = %s', (car_id,))
-        if not cursor.fetchone():
-            cursor.close()
-            conn.close()
-            return False
-
-        cursor.execute('DELETE FROM cars WHERE id = %s', (car_id,))
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-
-        return True
