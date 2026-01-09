@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосалон - Каталог автомобилей</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <h1><i class="fas fa-car"></i> Каталог автомобилей</h1>
+            <p class="subtitle">Выберите автомобиль мечты из нашей коллекции</p>
+        </header>
+
+        <!-- Панель управления -->
+        <div class="control-panel">
+            <div class="search-box">
+                <input type="number" id="searchId" placeholder="Поиск по ID автомобиля..." min="1">
+                <button onclick="searchCar()" class="btn btn-search">
+                    <i class="fas fa-search"></i> Найти
+                </button>
+                <button onclick="resetSearch()" class="btn btn-reset">
+                    <i class="fas fa-redo"></i> Показать все
+                </button>
+            </div>
+
+            <div class="stats">
+                <span id="carCount">Загружаем...</span>
+            </div>
+        </div>
+
+        <!-- Контейнер для автомобилей -->
+        <div id="carsContainer" class="cars-grid">
+            <!-- Автомобили будут загружены здесь -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Загрузка автомобилей...
+            </div>
+        </div>
+
+        <!-- Модальное окно для редактирования -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-edit"></i> Редактировать автомобиль</h2>
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editCarId">
+
+                        <div class="form-group">
+                            <label for="editFirm"><i class="fas fa-tag"></i> Марка:</label>
+                            <input type="text" id="editFirm" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editModel"><i class="fas fa-car-side"></i> Модель:</label>
+                            <input type="text" id="editModel" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editYear"><i class="fas fa-calendar-alt"></i> Год:</label>
+                                <input type="number" id="editYear" min="1900" max="2025" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editPower"><i class="fas fa-horse-head"></i> Мощность (л.с.):</label>
+                                <input type="number" id="editPower" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editColor"><i class="fas fa-palette"></i> Цвет:</label>
+                                <input type="text" id="editColor" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editPrice"><i class="fas fa-dollar-sign"></i> Цена ($):</label>
+                                <input type="number" id="editPrice" min="0" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editDealerId"><i class="fas fa-store"></i> Дилер (ID):</label>
+                            <input type="number" id="editDealerId" min="1">
+                            <small>Оставьте пустым, если без дилера</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="closeEditModal()" class="btn btn-cancel">
+                                <i class="fas fa-times"></i> Отмена
+                            </button>
+                            <button type="submit" class="btn btn-save">
+                                <i class="fas fa-save"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Уведомления -->
+        <div id="notification" class="notification"></div>
+
+        <!-- Подвал -->
+        <footer class="footer">
+            <p>Автосалон &copy; 2024 | <span id="currentYear"></span></p>
+            <p>Все автомобили в наличии. Цены указаны в долларах США.</p>
+            <p class="api-status">
+                Статус API:
+                <span id="apiStatus" class="status-online">
+                    <i class="fas fa-circle"></i> Проверка...
+                </span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Установка текущего года в подвале
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
